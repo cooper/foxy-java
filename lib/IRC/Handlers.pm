@@ -13,24 +13,24 @@ use strict;
 use feature qw(switch);
 
 my %handlers = (
-    005     => \&handle_isupport,
-    332     => \&handle_got_topic,
-    333     => \&handle_got_topic_time,
-    353     => \&handle_namesreply,
-    376     => \&handle_endofmotd,
-    422     => \&handle_endofmotd, # no motd file
-    433     => \&handle_nick_taken,
-    privmsg => \&handle_privmsg,
-    nick    => \&handle_nick,
-    join    => \&handle_join,
-    part    => \&handle_part,
-    quit    => \&handle_quit
+    raw_005     => \&handle_isupport,
+    raw_332     => \&handle_got_topic,
+    raw_333     => \&handle_got_topic_time,
+    raw_353     => \&handle_namesreply,
+    raw_376     => \&handle_endofmotd,
+    raw_422     => \&handle_endofmotd, # no motd file
+    raw_433     => \&handle_nick_taken,
+    raw_privmsg => \&handle_privmsg,
+    raw_nick    => \&handle_nick,
+    raw_join    => \&handle_join,
+    raw_part    => \&handle_part,
+    raw_quit    => \&handle_quit
 );
 
 # applies each handler to an IRC instance
 sub apply_handlers {
     my $irc = shift;
-    $irc->attach_event("raw_$_", $handlers{$_}) foreach keys %handlers;
+    $irc->attach_event($_, $handlers{$_}, "libirc.$_", 100) foreach keys %handlers;
     return 1
 }
 

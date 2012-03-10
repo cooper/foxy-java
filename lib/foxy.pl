@@ -24,6 +24,7 @@ BEGIN {
 use foxy;
 use EventedObject;
 use IRC;
+use Handlers;
 use Async::IRC;
 
 foxy::boot();

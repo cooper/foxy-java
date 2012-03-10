@@ -32,6 +32,7 @@ sub new {
     my $self = $class->SUPER::new(%opts);
     $self->IRC::configure($opts{nick});
     $self->IRC::Handlers::apply_handlers();
+    $self->Handlers::apply_handlers();
     return $self
 }
 

@@ -39,7 +39,7 @@ sub fire_event {
             };
  
             # call it.
-            $cb->[1]->(@_);
+            $cb->[1]->($obj, @_);
         }
     }
  

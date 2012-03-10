@@ -14,6 +14,32 @@ our $loop;
 sub boot {
     say 'hi!';
     $loop = IO::Async::Loop::Epoll->new;
+
+    # XXX XXX XXX
+
+    # create IRC object
+    my $irc = Async::IRC->new(
+        nick => 'Sharon',
+        user => 'sharon',
+        real => 'Sharon Herget',
+        host => 'Ventura.NL.EU.AlphaChat.net',
+        port => 6667
+    );
+
+
+    $loop->add($irc);
+    $irc->{autojoin} = ['#cooper'];
+    $irc->connect;
+    $irc->attach_event(raw => sub { say "@_" });
+    $irc->attach_event(privmsg => sub {
+        my ($irc, $who, $chan, $what) = @_;
+        if ($what =~ m/^e:(.+)/) {
+            return unless $who->{nick} eq 'cooper';
+            my $val = eval $1;
+            $irc->send("PRIVMSG $$chan{name} :".(defined $val ? $val : $@ ? $@ : "\2undef\2"));
+        }
+    });
+    # XXX XXX XXX
     $loop->loop_forever;
 }
 
