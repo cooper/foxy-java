@@ -22,6 +22,9 @@ BEGIN {
 }
 
 use foxy;
+use EventedObject;
+use IRC;
+use Async::IRC;
 
 foxy::boot();
 
@@ -45,9 +48,10 @@ sub reload {
     delete $INC{$inc_file};
 
     # re-evaluate the file
-    do $inc_file or return;
+    do $inc_file || return if shift;
 
     # afterwards callback
     $reloadable{$pkg}() if $reloadable{$pkg};
+    reload('TEMP', 1);
     return 1;
 }
