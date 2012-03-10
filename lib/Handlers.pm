@@ -41,7 +41,7 @@ sub handle_nick_taken {
     my $nick = $irc->{me}->{nick};
 
     # if we have tried 4 or less times then send the NICK with _ appended
-    if ($irc->{temp_nick_count} <= 4) {
+    if ($irc->{temp_nick_count} < 5) {
         $irc->send("NICK ${nick}_");
     }
 

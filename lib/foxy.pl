@@ -47,12 +47,14 @@ sub reload {
 
     my $inc_file = join('/', split /(?:'|::)/, $pkg).'.pm';
     delete $INC{$inc_file};
+    return if shift;
 
     # re-evaluate the file
-    do $inc_file || return if shift;
+    my $res = do $inc_file or return;
 
     # afterwards callback
     $reloadable{$pkg}() if $reloadable{$pkg};
     reload('TEMP', 1);
-    return 1;
+
+    return $res;
 }

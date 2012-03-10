@@ -49,6 +49,6 @@ sub shutdown {
 }
 
 main::regre {
-    if (shift) { $TEMP::LOOP = $loop }
-    else       { $loop = $TEMP::LOOP }
+    if (shift) { $TEMP::LOOP = $foxy::loop }
+    else       { $foxy::loop = $TEMP::LOOP }
 }
