@@ -1,4 +1,5 @@
 #!/usr/bin/perl
+# Copyright (c) 2012, Mitchell Cooper
 
 use warnings;
 use strict;
@@ -17,6 +18,7 @@ BEGIN {
     }
     unshift @INC, $run_dir;
     chdir $run_dir;
+    use lib 'lib';
 }
 
 use foxy;
@@ -33,15 +35,15 @@ sub reload {
 
     # delete the package symbol table
     no strict 'refs';
-    @{$class.'::ISA'} = ();
-    my $symtab = $class.'::';
+    @{$pkg.'::ISA'} = ();
+    my $symtab = $pkg.'::';
     foreach my $symbol (keys %$symtab) {
         next if $symbol =~ /\A[^:]+::\z/;
         delete $symtab->{$symbol};
     }
     use strict 'refs';
 
-    my $inc_file = join('/', split /(?:'|::)/, $class).'.pm';
+    my $inc_file = join('/', split /(?:'|::)/, $pkg).'.pm';
     delete $INC{$inc_file};
 
     # re-evaluate the file
