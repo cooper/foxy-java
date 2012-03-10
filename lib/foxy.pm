@@ -6,8 +6,17 @@ use warnings;
 use strict;
 use 5.010;
 
+our $loop;
+
 sub boot {
     say 'hi!';
 }
 
-1
+sub shutdown {
+    say 'bye!';
+}
+
+main::regre {
+    if (shift) { $TEMP::LOOP = $loop }
+    else       { $loop = $TEMP::LOOP }
+}
