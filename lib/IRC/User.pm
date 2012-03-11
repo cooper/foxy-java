@@ -43,6 +43,8 @@ sub from_string {
     my $user = $irc->{users}->{lc $nick} or return; # or give up
 
     if (defined $user) {
+        $user->fire_event(host_change => $user->{host}, $host ) if $user->{host} ne $host;
+        $user->fire_event(user_change => $user->{user}, $ident) if $user->{user} ne $user;
         $user->{user} = $ident;
         $user->{host} = $host;
     }
