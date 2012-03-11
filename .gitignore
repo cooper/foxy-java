@@ -1,3 +1,4 @@
 *~
 modules/auto
 modules/auto/*
+etc/*.db
