@@ -18,7 +18,7 @@ sub boot {
     # XXX XXX XXX
 
     # create IRC object
-    my $irc = Async::IRC->new(
+    $main::irc = my $irc = Async::IRC->new(
         nick => 'Sharon',
         user => 'sharon',
         real => 'Sharon Herget',

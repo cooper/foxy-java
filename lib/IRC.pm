@@ -36,9 +36,6 @@ sub configure {
 
     # XXX users will probably make a reference chain
     # $irc->{users}->[0]->{irc}->{users} and so on
-    $self->{users}    = {};
-    $self->{channels} = {};
-    $self->{events}   = {};
     $self->{me}       = IRC::User->new($self, $nick);
 }
 
