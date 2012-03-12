@@ -11,7 +11,6 @@ package IRC::User;
 use warnings;
 use strict;
 use base qw(EventedObject IRC::Functions::User);
-use overload fallback => 1, '""' => sub { "[user $_[0]{id}]" };
 
 our $id = 'a';
 

@@ -70,10 +70,12 @@ sub mod_void {
 # Add a command to Auto. XXX
 sub cmd_add {
     my ($cmd, $lvl, $priv, $help, $sub) = @_;
-    $cmd = lc $cmd;
-say 'REGISTER';
-    $API::Auto::commands{$cmd} = $sub;
-
+    $cmd = uc $cmd;
+    $API::Auto::commands{lc $cmd}      =
+    $API::Auto::Std::CMDS{$cmd}{'sub'} = $sub;
+    $API::Auto::Std::CMDS{$cmd}{lvl}   = $lvl;
+    $API::Auto::Std::CMDS{$cmd}{help}  = $help;
+    $API::Auto::Std::CMDS{$cmd}{priv}  = $priv;
     return 1;
 }
 

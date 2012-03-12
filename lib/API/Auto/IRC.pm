@@ -19,4 +19,9 @@ sub privmsg { #XXX
     $main::irc->channel_from_name($target)->send_privmsg($what);
 }
 
+sub nick {
+    my ($net, $nick) = @_;
+    $main::irc->send_nick($nick);
+}
+
 1
