@@ -16,7 +16,14 @@ my %events = (
     privmsg => \&h_privmsg
 );
 
-$main::irc->attach_event($_, $events{$_}, "Auto.$_") foreach keys %events;
+my %me_events = (
+    nick_change => \&update_my_info,
+    host_change => \&update_my_info,
+    user_change => \&update_my_info
+);
+
+manager::attach_irc_event($_, $events{$_}, "Auto.$_", 300)   foreach keys %events;
+manager::attach_me_event($_, $me_events{$_}, "Auto.$_", 300) foreach keys %me_events;
 
 # on_cprivmsg and on_uprivmsg
 sub h_privmsg {
@@ -44,7 +51,25 @@ sub h_privmsg {
     return 1;
 }
 
+#main::onreload {
+#    if (shift) { $TEMP::eo = $API::Auto::eo }
+#    else       { $API::Auto::eo = $TEMP::eo }
+#};
+
+# update State::IRC::botinfo
+sub update_my_info {
+    my $me  = shift;
+    my $svr = $me->{irc}->{server_name};
+    $State::IRC::botinfo{$svr}{$_} = $me->{$_} foreach qw(nick host user);
+    return 1;
+}
+
 package State::IRC;
-our %botinfo = (alphachat => { nick => 'Sharon' });
+our %botinfo;
+
+#main::onreload {
+#    if (shift) { %TEMP::botinfo = %State::IRC::botinfo }
+#    else       { %State::IRC::botinfo = %TEMP::botinfo }
+#};
 
 1

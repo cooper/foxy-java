@@ -11,6 +11,7 @@ package IRC::Channel;
 use warnings;
 use strict;
 use base qw(EventedObject IRC::Functions::Channel);
+use overload fallback => 1, '""' => sub { "[channel $_[0]{name}]" };
 
 # CLASS METHODS
 

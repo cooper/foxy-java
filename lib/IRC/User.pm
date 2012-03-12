@@ -11,6 +11,9 @@ package IRC::User;
 use warnings;
 use strict;
 use base qw(EventedObject IRC::Functions::User);
+use overload fallback => 1, '""' => sub { "[user $_[0]{id}]" };
+
+our $id = 'a';
 
 # CLASS METHODS
 
@@ -20,7 +23,8 @@ sub new {
     # create a new user object
     bless my $user = {
         nick   => $nick,
-        events => {}
+        events => {},
+        id     => $id++
     }, $class;
 
     $user->{irc}              = $irc; # creates a looping reference XXX
@@ -43,10 +47,18 @@ sub from_string {
     my $user = $irc->{users}->{lc $nick} or return; # or give up
 
     if (defined $user) {
-        $user->fire_event(host_change => $user->{host}, $host ) if $user->{host} ne $host;
-        $user->fire_event(user_change => $user->{user}, $ident) if $user->{user} ne $user;
-        $user->{user} = $ident;
-        $user->{host} = $host;
+        my $old_ident = $user->{user};
+        my $old_host  = $user->{host};
+
+        # fire changed events
+        if ($old_ident ne $ident) {
+            $user->{user} = $ident;
+            $user->fire_event(user_change => $old_ident, $ident);
+        }
+        if ($old_host ne $host) {
+            $user->{host} = $host;
+            $user->fire_event(host_change => $old_host, $host);
+        }
     }
 
     return $user

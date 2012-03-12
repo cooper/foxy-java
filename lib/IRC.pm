@@ -10,6 +10,7 @@ package IRC;
 use warnings;
 use strict;
 use base qw(EventedObject IRC::Functions::IRC);
+use overload fallback => 1, '""' => sub { "[IRC $_[0]{server_name}]" };
 
 use IRC::User;
 use IRC::Channel;
