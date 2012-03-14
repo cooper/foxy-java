@@ -15,13 +15,16 @@ sub notice {
 }
 
 sub privmsg { #XXX
-    my ($net, $target, $what) = @_;
-    $main::irc->channel_from_name($target)->send_privmsg($what);
+    my ($irc, $target, $what) = &args;
+    $irc->channel_from_name($target)->send_privmsg($what);
 }
 
 sub nick {
-    my ($net, $nick) = @_;
-    $main::irc->send_nick($nick);
+    my ($irc, $nick) = &args;
+    $irc->send_nick($nick);
 }
+
+# argument list with IRC object instead of server name
+sub args { (manager::get(shift), @_) }
 
 1
