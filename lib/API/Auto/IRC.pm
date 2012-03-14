@@ -9,7 +9,7 @@ use strict;
 use Exporter;
 use base 'Exporter';
 
-our @EXPORT_OK = qw(notice privmsg);
+our @EXPORT_OK = qw(notice privmsg nick);
 
 sub notice {
 }

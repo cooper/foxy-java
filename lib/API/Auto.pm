@@ -9,6 +9,8 @@ use warnings;
 use strict;
 use 5.010;
 
+use API::Auto::State::IRC; # State::IRC
+
 # used for auto hooks
 our ($eo, %commands) = EventedObject->new;
 
@@ -51,25 +53,17 @@ sub h_privmsg {
     return 1;
 }
 
-#main::onreload {
-#    if (shift) { $TEMP::eo = $API::Auto::eo }
-#    else       { $API::Auto::eo = $TEMP::eo }
-#};
-
 # update State::IRC::botinfo
 sub update_my_info {
     my $me  = shift;
     my $svr = $me->{irc}->{server_name};
-    $State::IRC::botinfo{$svr}{$_} = $me->{$_} foreach qw(nick host user);
+    $API::Auto::State::IRC::botinfo{$svr}{$_} = $me->{$_} foreach qw(nick host user);
     return 1;
 }
 
-package State::IRC;
-our %botinfo;
-
-#main::onreload {
-#    if (shift) { %TEMP::botinfo = %State::IRC::botinfo }
-#    else       { %State::IRC::botinfo = %TEMP::botinfo }
-#};
+main::regre {
+    if (shift) { $TEMP::eo = $API::Auto::eo }
+    else       { $API::Auto::eo = $TEMP::eo }
+};
 
 1
