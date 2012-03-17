@@ -10,7 +10,6 @@ use strict;
 use 5.010;
 
 use API::Auto::Tie;
-use API::Auto::State::IRC; # State::IRC
 
 # used for auto hooks
 our ($eo, %commands) = EventedObject->new;
@@ -56,5 +55,11 @@ main::regre {
     if (shift) { $TEMP::eo = $API::Auto::eo }
     else       { $API::Auto::eo = $TEMP::eo }
 };
+
+# State::IRC
+package API::Auto::State::IRC;
+
+our %botinfo;
+tie %botinfo, 'API::Auto::Tie::botinfo';
 
 1

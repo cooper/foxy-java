@@ -65,7 +65,8 @@ sub _tie {
     return {
         nick  => $irc->{me}->{nick},
         ident => $irc->{me}->{user},
-        user  => $irc->{me}->{user}
+        user  => $irc->{me}->{user},
+        host  => $irc->{me}->{host}
     }
 }
 
