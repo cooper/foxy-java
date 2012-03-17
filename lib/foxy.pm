@@ -8,6 +8,7 @@ use 5.010;
 
 use IO::Async;
 use IO::Async::Loop::Epoll;
+use conf;
 
 our $loop;
 
