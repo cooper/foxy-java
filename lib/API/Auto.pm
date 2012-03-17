@@ -20,9 +20,7 @@ my %events = (
 );
 
 my %me_events = (
-    nick_change => \&update_my_info,
-    host_change => \&update_my_info,
-    user_change => \&update_my_info
+
 );
 
 manager::attach_irc_event($_, $events{$_}, "Auto.$_", 300)   foreach keys %events;
@@ -51,14 +49,6 @@ sub h_privmsg {
         return 1;
     }
     $eo->fire_event(on_uprivmsg => $src, split /\s+/, $msg);
-    return 1;
-}
-
-# update State::IRC::botinfo
-sub update_my_info {
-    my $me  = shift;
-    my $svr = $me->{irc}->{server_name};
-    $API::Auto::State::IRC::botinfo{$svr}{$_} = $me->{$_} foreach qw(nick host user);
     return 1;
 }
 

@@ -34,7 +34,7 @@ sub DELETE {
 
 sub CLEAR {
     my $this = shift;
-    %{$this->{'data'}} = ();
+    %{$this->{data}} = ();
 }
 
 sub EXISTS {
