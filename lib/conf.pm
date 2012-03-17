@@ -13,20 +13,20 @@ our %conf;
  
 sub parse {
     delete $conf{_parsed};
-    open my $fh, '<', shift or return
+    open my $fh, '<', shift or return;
 
     my ($i, $block, $name, $key, $val) = (0, 'sec', 'main'); 
     LINE: for (<$fh>) {
         $i++;
  
         # named block start
-        # block "name" {
+        # block (name):
         when (/^(.+?)\s*\((.+?)\):/) {
             ($block, $name) = (trim($1), trim($2));
         }
  
         # nameless block start
-        # block {
+        # block:
         when (/^(.+?):/) {
             ($block, $name) = ('sec', trim($1));
         }
