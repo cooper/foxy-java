@@ -187,7 +187,8 @@ sub rchook_add {
     if (defined $RAWHOOKS{$cmd}{$name}) { return }
     
     # Create the hook.
-    $RAWHOOKS{$cmd}{$name} = $sub;
+    $API::Auto::eo->attach_event("rc_$cmd" => sub { shift; $sub->(@_) }, "rc.$name");
+    $RAWHOOKS{$cmd}{$name} = $sub; # compat
 
     return 1;
 }
@@ -201,6 +202,7 @@ sub rchook_del {
     if (!defined $RAWHOOKS{$cmd}{$name}) { return }
 
     # Delete it.
+    $API::Auto::eo->delete_event("rc_$cmd" => "rc.$name");
     delete $RAWHOOKS{$cmd}{$name};
 
     return 1;
@@ -212,8 +214,8 @@ sub conf_get {
 
     # Create an array out of the value.
     my @val;
-    if ($value =~ m/:/sm) { ## no critic qw(RegularExpressions::RequireExtendedFormatting)
-        @val = split m/[:]/sm, $value; ## no critic qw(RegularExpressions::RequireExtendedFormatting)
+    if ($value =~ m/:/sm) {
+        @val = split m/[:]/sm, $value;
     }
     else {
         @val = ($value);
@@ -291,19 +293,19 @@ sub match_user {
                 }
             }
             elsif ($uhk eq 'chanstatus' and defined $ulhp{'net'}) {
-                my ($ccst, $ccnm) = split m/[:]/sm, ($ulhp{$uhk})[0][0]; ## no critic qw(RegularExpressions::RequireExtendedFormatting)
+                my ($ccst, $ccnm) = split m/[:]/sm, ($ulhp{$uhk})[0][0];
                 my $svr = $ulhp{net}[0];
                 if (defined $Auto::SOCKET{$svr}) {
                     if ($ccnm eq 'CURRENT' and defined $user{chan}) {
                         if (defined $State::IRC::chanusers{$svr}{$user{chan}}{lc $user{nick}}) {
-                            if ($State::IRC::chanusers{$svr}{$user{chan}}{lc $user{nick}} =~ m/($ccst)/sm) { push @matches, $userkey; } ## no critic qw(RegularExpressions::RequireExtendedFormatting)
+                            if ($State::IRC::chanusers{$svr}{$user{chan}}{lc $user{nick}} =~ m/($ccst)/sm) { push @matches, $userkey; }
                         }
                     }
                     else {
                         foreach my $bcj (keys %{ $Proto::IRC::botchans{$svr} }) {
                             if (lc($bcj) eq lc($ccnm)) {
                                 if (defined $State::IRC::chanusers{$svr}{$bcj}{lc $user{nick}}) {
-                                    if ($State::IRC::chanusers{$svr}{$bcj}{lc $user{nick}} =~ m/($ccst)/sm) { push @matches, $userkey; } ## no critic qw(RegularExpressions::RequireExtendedFormatting)
+                                    if ($State::IRC::chanusers{$svr}{$bcj}{lc $user{nick}} =~ m/($ccst)/sm) { push @matches, $userkey; }
                                 }
                             }
                         }

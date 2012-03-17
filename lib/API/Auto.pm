@@ -9,6 +9,7 @@ use warnings;
 use strict;
 use 5.010;
 
+use API::Auto::Tie;
 use API::Auto::State::IRC; # State::IRC
 
 # used for auto hooks
