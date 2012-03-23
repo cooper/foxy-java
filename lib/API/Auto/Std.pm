@@ -209,7 +209,7 @@ sub rchook_del {
 }
 
 # Configuration value getter.
-sub conf_get { conf::get('Auto/'.shift()) }
+sub conf_get { [ conf::get('Auto/'.shift()) ] }
 
 # Translation subroutine. (foxy is English only.)
 sub trans { shift }
