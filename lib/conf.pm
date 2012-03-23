@@ -18,27 +18,27 @@ sub parse {
     my ($i, $block, $name, $key, $val) = (0, 'sec', 'main'); 
     LINE: for (<$fh>) {
         $i++;
- 
+
+        # comment
+        when (/^#/) { next LINE }
+
+        # key & value
+        when (/^(.+?)\s*=(.+)$/) {
+            $conf{defined $block ? $block : 'sec'}
+                 {defined $name ? $name : 'main'}{trim($1)} = parse_value(trim($2));
+        }
+
         # named block start
         # block (name):
-        when (/^(.+?)\s*\((.+?)\):/) {
+        when (/^(.+?)\s*\((.+?)\):$/) {
             ($block, $name) = (trim($1), trim($2));
         }
  
         # nameless block start
         # block:
-        when (/^(.+?):/) {
+        when (/^(.+?):$/) {
             ($block, $name) = ('sec', trim($1));
         }
- 
-        # key & value
-        when (/^(.+?)\s*=(.+)/) {
-            $conf{defined $block ? $block : 'sec'}
-                 {defined $name ? $name : 'main'}{trim($1)} = parse_value(trim($2));
-        }
-
-        # comment
-        when (/^#/) { next LINE }
     }
  
     close $fh;
@@ -48,14 +48,16 @@ sub parse {
  
 # get conf value
 sub get {
-    my ($str, $current, $level) = (shift, \%conf);
-    my @levels = split /:/, $str;
+    my ($str, $current, $last, $level) = (shift, \%conf, \%conf);
+    my @lvl = my @levels = split /:/, $str;
  
-    # unnamed block
-    unshift @levels, 'sec' if scalar @levels == 2;
+    # assume unnamed block
+    unshift @levels, 'sec' if @levels == 2;
  
     while (defined ( $level = shift @levels )) {
-        $current = $current->{$level}
+        $current = defined $current->{$level} ?
+                           $current->{$level} :
+                           $conf{$lvl[0]}{'*'}{$level};
     }
     return make_value_useful($current);
 }
@@ -72,7 +74,7 @@ sub aget {
     return make_value_useful($current);
 }
  
-# (long get) same as get but accepts separate arguments
+# (long get) same as aget but accepts separate arguments
 # (useful for fetching conf values from variables)
 sub lget {
     my @levels = @_;
@@ -88,11 +90,11 @@ sub parse_value {
     my $value = shift;
     given ($value) {
         # string
-        when (/"(.+)"/) {
+        when (/"(.+)"$/) {
             return $1;
         }
         # array
-        when (/\((.+)\)/) {
+        when (/\((.+)\)$/) {
             return [split /\s+/, $1];
         }
     }

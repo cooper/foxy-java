@@ -208,53 +208,8 @@ sub rchook_del {
     return 1;
 }
 
-# Configuration value getter. XXX
-sub conf_get {
-    my ($value) = @_;
-
-    # Create an array out of the value.
-    my @val;
-    if ($value =~ m/:/sm) {
-        @val = split m/[:]/sm, $value;
-    }
-    else {
-        @val = ($value);
-    }
-    # Undefine this as it's unnecessary now.
-    undef $value;
-
-    # Get the count of elements in the array.
-    my $count = scalar @val;
-
-    # Return the requested configuration value(s).
-    if ($count == 1) {
-        if (ref $Auto::SETTINGS{$val[0]} eq 'HASH') {
-            return %{ $Auto::SETTINGS{$val[0]} };
-        }
-        else {
-            return $Auto::SETTINGS{$val[0]};
-        }
-    }
-    elsif ($count == 2) {
-        if (ref $Auto::SETTINGS{$val[0]}{$val[1]} eq 'HASH') {
-            return %{ $Auto::SETTINGS{$val[0]}{$val[1]} };
-        }
-        else {
-            return $Auto::SETTINGS{$val[0]}{$val[1]};
-        }
-    }
-    elsif ($count == 3) {
-        if (ref $Auto::SETTINGS{$val[0]}{$val[1]}{$val[2]} eq 'HASH') {
-            return %{ $Auto::SETTINGS{$val[0]}{$val[1]}{$val[2]} };
-        }
-        else {
-            return $Auto::SETTINGS{$val[0]}{$val[1]}{$val[2]};
-        }
-    }
-    else {
-        return;
-    }
-}
+# Configuration value getter.
+sub conf_get { conf::get('Auto/'.shift()) }
 
 # Translation subroutine. (foxy is English only.)
 sub trans { shift }

@@ -9,12 +9,18 @@ use 5.010;
 use IO::Async;
 use IO::Async::Loop::Epoll;
 use conf;
+use manager;
 
 our $loop;
 
 sub boot {
     say 'hi!';
-    $loop = IO::Async::Loop::Epoll->new;
+
+    # parse configuration
+    conf::parse('etc/foxy.conf') or die "Can't load configuration.";
+
+    # setup IO::Async
+    $loop = IO::Async::Loop::Epoll->new();
 
     # XXX XXX XXX
 
@@ -27,8 +33,9 @@ sub boot {
         port => 6667
     );
 
-
+    $irc->{server_name} = 'alphachat';
     $loop->add($irc);
+    manager::add($irc);
     $irc->{autojoin} = ['#cooper'];
     $irc->connect;
     $irc->attach_event(raw => sub { say "@_" });
